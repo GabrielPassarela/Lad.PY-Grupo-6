@@ -1,5 +1,12 @@
+from database import conectar
 
+teste = conectar()
 
+if teste:
+    print(" Conectado")
+    teste.close()
+else:
+    print("Não conectou")
 
 import menus
 
@@ -150,7 +157,7 @@ while opc_principal != 0:
                         print("\n  [ERRO] Opção inválida.")
 
         case 0:
-            print("\n  Encerrando o sistema. Até logo!\n")
+            print("\n  Encerrando o sistema.\n")
 
         case _:
             print("\n  [ERRO] Opção inválida.")
