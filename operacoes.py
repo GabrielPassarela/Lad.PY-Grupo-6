@@ -1,4 +1,13 @@
-import validacao 
+import validacao
+import database
+import mysql.connector
+import random
+import string
+
+def gerar_chave():
+    caracteres = string.ascii_uppercase + string.digits
+    return ''.join(random.choices(caracteres, k=7))
+
 
 def cadastrar_eleitor():
     nome = input("Digite o nome completo do eleitor: ").strip()
@@ -6,101 +15,88 @@ def cadastrar_eleitor():
     mesario = input("Você é mesário? (1 - Sim, 0 - Não): ").strip()
     titulo_de_eleitor = input("Digite o número do título de eleitor: ").strip()
 
-    cpf_valido = validacao.validacao(cpf)          
-    titulo_valido = validacao.validacao_titulo(titulo_de_eleitor)  
-
-    if not (cpf_valido and titulo_valido):
-        print("Documentos inválidos!")
+    if not validacao.validacao(cpf):
+        print("CPF inválido!")
+        return
+    if not validacao.validacao_titulo(titulo_de_eleitor):
+        print("Título de eleitor inválido!")
         return
 
-    print("\n  Eleitor cadastrado com sucesso!")
+    chave_acesso = gerar_chave()
 
+    try:
+        conn = database.conectar()
+        cursor = conn.cursor()
 
-def editar_eleitor():
-    
-    print("\n  Em desenvolvimento.")
+        sql = """INSERT INTO ELEITORES (nome_completo, titulo_eleitor, cpf, mesário, chave_acesso)
+                 VALUES (%s, %s, %s, %s, %s)"""
+        valores = (nome, titulo_de_eleitor, cpf, int(mesario), chave_acesso)
 
+        cursor.execute(sql, valores)
+        conn.commit()
+        print("\n  Eleitor cadastrado com sucesso!")
+        print(f"  Chave de acesso: {chave_acesso}")
 
-def remover_eleitor():
-    
-    print("\n  Em desenvolvimento.")
+    except mysql.connector.IntegrityError:
+        print("\n  Erro: CPF ou título de eleitor já cadastrado.")
+    except Exception as e:
+        print(f"\n  Erro ao cadastrar: {e}")
+    finally:
+        cursor.close()
+        conn.close()
 
 
 def buscar_eleitor():
-   
     print("\n  Em desenvolvimento.")
 
+
+def editar_eleitor():
+    print("\n  Em desenvolvimento.")
+
+def remover_eleitor():
+    print("\n  Em desenvolvimento.")
 
 def listar_eleitores():
-   
-    print("\n  Em desenvolvimento.")
-
+        print("\n  Em desenvolvimento.")
 
 def cadastrar_candidato():
-   
     print("\n  Em desenvolvimento.")
-
 
 def editar_candidato():
-   
     print("\n  Em desenvolvimento.")
-
 
 def remover_candidato():
-    
     print("\n  Em desenvolvimento.")
-
 
 def buscar_candidato():
-    
     print("\n  Em desenvolvimento.")
-
 
 def listar_candidatos():
-   
     print("\n  Em desenvolvimento.")
-
 
 def autenticar_mesario():
-    
     print("\n  Em desenvolvimento.")
-
 
 def registrar_voto():
-   
     print("\n  Em desenvolvimento.")
-
 
 def encerrar_votacao():
-    
     print("\n  Em desenvolvimento.")
-
 
 def exibir_logs():
-   
     print("\n  Em desenvolvimento.")
-
 
 def exibir_protocolos():
-   
     print("\n  Em desenvolvimento.")
-
 
 def boletim_urna():
-   
     print("\n  Em desenvolvimento.")
-
 
 def estatistica_comparecimento():
-    
     print("\n  Em desenvolvimento.")
-
 
 def votos_por_partido():
-   
     print("\n  Em desenvolvimento.")
 
-
 def validacao_integridade():
-   
     print("\n  Em desenvolvimento.")
