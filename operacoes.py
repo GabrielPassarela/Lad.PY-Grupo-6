@@ -1,4 +1,4 @@
-import validacao  # sem acento
+import validacao 
 
 def cadastrar_eleitor():
     nome = input("Digite o nome completo do eleitor: ").strip()
@@ -6,8 +6,8 @@ def cadastrar_eleitor():
     mesario = input("Você é mesário? (1 - Sim, 0 - Não): ").strip()
     titulo_de_eleitor = input("Digite o número do título de eleitor: ").strip()
 
-    cpf_valido = validacao.validacao(cpf)           # sem acento
-    titulo_valido = validacao.validacao_titulo(titulo_de_eleitor)  # sem acento
+    cpf_valido = validacao.validacao(cpf)          
+    titulo_valido = validacao.validacao_titulo(titulo_de_eleitor)  
 
     if not (cpf_valido and titulo_valido):
         print("Documentos inválidos!")
