@@ -3,6 +3,7 @@ import database
 import mysql.connector
 import random
 import string
+from datetime import datetime
 
 def gerar_chave():
     caracteres = string.ascii_uppercase + string.digits
@@ -12,6 +13,7 @@ def gerar_chave():
 def cadastrar_eleitor():
     nome = input("Digite o nome completo do eleitor: ").strip()
     cpf = input("Digite o CPF do eleitor: ").strip()
+    cpf = cpf.replace(".", "").replace("-", "")
     
     while not validacao.validacao(cpf):
         print("CPF inválido! Tente novamente.")
@@ -145,7 +147,37 @@ def registrar_voto():
     print("\n  Em desenvolvimento.")
 
 def encerrar_votacao():
-    print("\n  Em desenvolvimento.")
+   
+    print("\n  --------------------------------------------------")
+    print("         ENCERRAMENTO DO SISTEMA DE VOTAÇÃO")
+    print("  --------------------------------------------------")
+ 
+  
+    titulo_eleitor = input("digite seu titulo de eleitor: ")
+    cpf = input("digite os 4 primeiros digitos do seu cpf: ")
+    chave = input("digite a chave de acesso: ")
+    conn = database.conectar()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM eleitores WHERE titulo_eleitor = %s AND cpf LIKE %s AND chave_acesso = %s AND mesário = 1", (titulo_eleitor, f"{cpf}%", chave))
+        eleitor = cursor.fetchone()
+        if eleitor:
+            confirmacao = input("Deseja realmente encerrar a votacao? (Sim/Nao): ")
+            if confirmacao != "sim":
+                print("Encerramento cancelado.")
+            else:
+                chave_confirmacao = input("Digite sua chave de acesso novamente: ")
+                if chave_confirmacao != chave:
+                    print("Chave de acesso incorreta. Encerramento nao autorizado.")
+                else:
+                    print("Votacao encerrada com sucesso!")
+        else:
+            print("Dados invalidos ou usuario nao e mesário.")
+    except Exception as e:
+        print(f"Erro: {e}")
+    finally:
+        cursor.close()
+        conn.close()
 
 def exibir_logs():
     print("\n  Em desenvolvimento.")
