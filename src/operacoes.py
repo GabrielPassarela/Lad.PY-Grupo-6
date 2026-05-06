@@ -1,5 +1,6 @@
 import validacao
 import database
+import logs
 import mysql.connector
 import random
 import string
@@ -134,8 +135,10 @@ def autenticar_mesario():
             resultados = cursor.fetchall()
             for candidato in resultados:
              print(f"Candidato: {candidato['nome']} - Votos: 0")
+            logs.log_abertura()
         else:
             print("Dados inválidos ou usuário não é mesário.")
+            logs.log_alerta_acesso_negado("abertura de urna")
     except Exception as e:
         print(f"Erro: {e}")
     finally:
@@ -169,10 +172,13 @@ def encerrar_votacao():
                 chave_confirmacao = input("Digite sua chave de acesso novamente: ")
                 if chave_confirmacao != chave:
                     print("Chave de acesso incorreta. Encerramento nao autorizado.")
+                    logs.log_alerta_acesso_negado("confirmação de chave no encerramento")
                 else:
                     print("Votacao encerrada com sucesso!")
+                    logs.log_encerramento()
         else:
             print("Dados invalidos ou usuario nao e mesário.")
+            logs.log_alerta_acesso_negado("encerramento de urna")
     except Exception as e:
         print(f"Erro: {e}")
     finally:
@@ -180,10 +186,30 @@ def encerrar_votacao():
         conn.close()
 
 def exibir_logs():
-    print("\n  Em desenvolvimento.")
+    logs.exibir_logs()
 
 def exibir_protocolos():
-    print("\n  Em desenvolvimento.")
+    print("\n  --------------------------------------------------")
+    print("           PROTOCOLOS DE VOTAÇÃO")
+    print("  --------------------------------------------------")
+    try:
+        conn = database.conectar()
+        cursor = conn.cursor()
+        cursor.execute("SELECT protocolo, data_hora FROM VOTOS ORDER BY protocolo ASC")
+        protocolos = cursor.fetchall()
+        if not protocolos:
+            print("  Nenhum protocolo registrado.")
+        else:
+            for i, row in enumerate(protocolos, start=1):
+                print(f"  {i:>3}. {row[0]}  |  {row[1]}")
+        print("  --------------------------------------------------")
+        print(f"  Total: {len(protocolos)} protocolo(s).")
+        print("  --------------------------------------------------")
+    except Exception as e:
+        print(f"\n  Erro ao exibir protocolos: {e}")
+    finally:
+        cursor.close()
+        conn.close()
 
 def boletim_urna():
     print("\n  Em desenvolvimento.")
